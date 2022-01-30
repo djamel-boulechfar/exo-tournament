@@ -5,6 +5,7 @@ public abstract class Fighter {
     int hitPoints;
     Weapon weapon;
     Buckler buckler;
+    boolean armored;
 
     /* --- Getters & setters --- */
     public int hitPoints() {
@@ -38,6 +39,9 @@ public abstract class Fighter {
 
     // Function that makes the fighter lose a certain amount of hitPoints
     public void takeDamage(int damage) {
+        if (this.armored) { // If the fighter has an armor, reduce taken damage by 3
+            damage -= 3;
+        }
         this.hitPoints -= damage;
         if (this.hitPoints < 0) { // If the fighter hitPoints are below 0, they are set to 0
             this.hitPoints = 0;
@@ -46,19 +50,24 @@ public abstract class Fighter {
 
     // Function that makes the fighter attack his enemy
     public void attack(Fighter enemy) {
-        Buckler enemyBuckler = enemy.buckler(); // Getting the enemy's buckler
-        boolean attackBlocked = false;
-        if (enemyBuckler != null) { // If the enemy has a buckler
-            boolean attacksWithAnAxe = this.weapon().getType().equals("Axe"); // Check if fighter attacks with an axe
-            attackBlocked = enemyBuckler.canBlockAttack(attacksWithAnAxe); // Try to block the attack and get result
-        }
-        if(attackBlocked) { // If the attack has been blocked
-            if (enemyBuckler.axeBlocksLeft() == 0) { // Check if the enemy's buckler has any axe blocks left
-                enemy.removeBuckler(); // If not, remove it
+        if (this.weapon().canAttack()) {
+            Buckler enemyBuckler = enemy.buckler(); // Getting the enemy's buckler
+            boolean attackBlocked = false;
+            if (enemyBuckler != null) { // If the enemy has a buckler
+                boolean attacksWithAnAxe = this.weapon().getType().equals("Axe"); // Check if fighter attacks with an axe
+                attackBlocked = enemyBuckler.canBlockAttack(attacksWithAnAxe); // Try to block the attack and get result
             }
-        } else { // If the attack hasn't been blocked
-            int damage = this.weapon().getDamage(); // Get the fighter's weapon damage
-            enemy.takeDamage(damage); // Make the enemy take that amount of damage
+            if(attackBlocked) { // If the attack has been blocked
+                if (enemyBuckler.axeBlocksLeft() == 0) { // Check if the enemy's buckler has any axe blocks left
+                    enemy.removeBuckler(); // If not, remove it
+                }
+            } else { // If the attack hasn't been blocked
+                int damage = this.weapon().getDamage(); // Get the fighter's weapon damage
+                if (this.armored) { // If the fighter has an armor, reduce delivered damage by 1
+                    damage -= 1;
+                }
+                enemy.takeDamage(damage); // Make the enemy take that amount of damage
+            }
         }
     }
 
@@ -70,6 +79,11 @@ public abstract class Fighter {
     // Function that removes the fighter's buckler
     public void removeBuckler() {
         this.buckler = null;
+    }
+
+    // Function that adds armor to the fighter
+    public void giveArmor() {
+        this.armored = true;
     }
 
     // Abstract methods

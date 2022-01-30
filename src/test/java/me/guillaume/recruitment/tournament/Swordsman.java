@@ -4,8 +4,9 @@ public class Swordsman extends Fighter {
 
     public Swordsman() {
         hitPoints = 100;
-        weapon = new Weapon("One hand sword", false, 5);
+        weapon = new Weapon("One hand sword", false, 5, -1);
         buckler = null;
+        armored = false;
     }
 
     public Swordsman(String specialization) {
@@ -16,6 +17,9 @@ public class Swordsman extends Fighter {
         Swordsman newSwordsman = this;
         if (item.equals("buckler")) {
             newSwordsman.giveBuckler();
+        }
+        if (item.equals("armor")) {
+            newSwordsman.giveArmor();
         }
         return newSwordsman;
     }
