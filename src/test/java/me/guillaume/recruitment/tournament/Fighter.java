@@ -6,6 +6,7 @@ public abstract class Fighter {
     Weapon weapon;
     Buckler buckler;
     boolean armored;
+    String specialization;
 
     /* --- Getters & setters --- */
     public int hitPoints() {
@@ -18,6 +19,10 @@ public abstract class Fighter {
 
     public Buckler buckler() {
         return this.buckler;
+    }
+
+    public void setWeapon(Weapon newWeapon) {
+        this.weapon = newWeapon;
     }
     /* ------------------------- */
 
@@ -57,12 +62,13 @@ public abstract class Fighter {
                 boolean attacksWithAnAxe = this.weapon().getType().equals("Axe"); // Check if fighter attacks with an axe
                 attackBlocked = enemyBuckler.canBlockAttack(attacksWithAnAxe); // Try to block the attack and get result
             }
+            int damage = this.weapon().getDamage(); // Get the fighter's weapon damage
+            damage = this.applyModifiers(damage); // Modify damage depending on fighter's specialization
             if(attackBlocked) { // If the attack has been blocked
                 if (enemyBuckler.axeBlocksLeft() == 0) { // Check if the enemy's buckler has any axe blocks left
                     enemy.removeBuckler(); // If not, remove it
                 }
             } else { // If the attack hasn't been blocked
-                int damage = this.weapon().getDamage(); // Get the fighter's weapon damage
                 if (this.armored) { // If the fighter has an armor, reduce delivered damage by 1
                     damage -= 1;
                 }
@@ -90,5 +96,8 @@ public abstract class Fighter {
 
     // Function that equips an item on the fighter and returns the resulting fighter
     public abstract Fighter equip(String item);
+
+    // Function that applies modifiers based on the fighter's specialization
+    public abstract int applyModifiers(int baseDamage);
 
 }
