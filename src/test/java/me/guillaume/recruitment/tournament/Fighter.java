@@ -60,15 +60,11 @@ public abstract class Fighter {
             boolean attackBlocked = false;
             if (enemyBuckler != null) { // If the enemy has a buckler
                 boolean attacksWithAnAxe = this.weapon().getType().equals("Axe"); // Check if fighter attacks with an axe
-                attackBlocked = enemyBuckler.canBlockAttack(attacksWithAnAxe); // Try to block the attack and get result
+                attackBlocked = enemyBuckler.canBlockAttack(enemy, attacksWithAnAxe); // Try to block the attack and get result
             }
             int damage = this.weapon().getDamage(); // Get the fighter's weapon damage
             damage = this.applyModifiers(damage); // Modify damage depending on fighter's specialization
-            if(attackBlocked) { // If the attack has been blocked
-                if (enemyBuckler.axeBlocksLeft() == 0) { // Check if the enemy's buckler has any axe blocks left
-                    enemy.removeBuckler(); // If not, remove it
-                }
-            } else { // If the attack hasn't been blocked
+            if(!attackBlocked) { // If the attack hasn't been blocked
                 if (this.armored) { // If the fighter has an armor, reduce delivered damage by 1
                     damage -= 1;
                 }

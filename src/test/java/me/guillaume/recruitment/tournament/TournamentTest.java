@@ -2,9 +2,11 @@ package me.guillaume.recruitment.tournament;
 
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import static org.mockito.Mockito.*;
 
 /**
  *
@@ -96,6 +98,44 @@ public class TournamentTest {
         assertThat(swordsman.hitPoints()).isEqualTo(1);
         assertThat(highlander.hitPoints()).isEqualTo(0);
 
+    }
+
+    @Test
+    public void BucklerBlocksOnceEveryTwoHits() {
+        Swordsman swordsman = new Swordsman().equip("buckler");
+
+        Buckler buckler = swordsman.buckler();
+
+        assertThat(buckler.canBlockAttack(swordsman, false)).isTrue();
+        assertThat(buckler.canBlockAttack(swordsman, false)).isFalse();
+        assertThat(buckler.canBlockAttack(swordsman, false)).isTrue();
+        assertThat(buckler.canBlockAttack(swordsman, false)).isFalse();
+    }
+
+    @Test
+    public void BucklerDestruction() {
+
+        Swordsman swordsman = mock(Swordsman.class);
+
+        Buckler buckler = new Buckler();
+
+        buckler.canBlockAttack(swordsman, false);
+        buckler.canBlockAttack(swordsman, false);
+        buckler.canBlockAttack(swordsman, false);
+
+        verify(swordsman, times(0)).removeBuckler();
+
+        buckler.canBlockAttack(swordsman, true);
+        buckler.canBlockAttack(swordsman, true);
+        buckler.canBlockAttack(swordsman, true);
+        buckler.canBlockAttack(swordsman, true);
+        buckler.canBlockAttack(swordsman, true);
+
+        verify(swordsman, times(0)).removeBuckler();
+
+        buckler.canBlockAttack(swordsman, true);
+
+        verify(swordsman, times(1)).removeBuckler();
     }
 
 }

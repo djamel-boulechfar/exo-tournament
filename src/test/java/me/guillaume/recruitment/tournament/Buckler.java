@@ -14,10 +14,13 @@ public class Buckler {
         return this.axeBlocksLeft;
     }
 
-    public boolean canBlockAttack(boolean attackedByAxe) {
+    public boolean canBlockAttack(Fighter owner, boolean attackedByAxe) {
         if (blocksNextAttack) { // If the buckler didn't block last attack
             if (attackedByAxe) {
                 this.axeBlocksLeft -= 1; // Decrease axeBlocksLeft
+                if (this.axeBlocksLeft == 0) {
+                    destroyBuckler(owner);
+                }
             }
             this.blocksNextAttack = false; // Put this boolean to false to tell that it shouldn't block next attack
             return true; // Return true to tell that the attack has been blocked
@@ -25,6 +28,11 @@ public class Buckler {
             blocksNextAttack = true; // Put this boolean to true to tell that it should block next attack
         }
         return false; // Return false to tell that the attack hasn't been blocked
+    }
+
+    // Function that destroys the buckler by removing it from the owner
+    public void destroyBuckler(Fighter owner) {
+        owner.removeBuckler();
     }
 
 }
